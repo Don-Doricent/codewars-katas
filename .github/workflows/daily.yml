@@ -1,9 +1,9 @@
 name: Daily Codewars Update
 
 on:
-  workflow_dispatch:       # allows manual trigger in the Actions UI
+  workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'    # runs every day at 01:00 UTC = 9:00 PM Eastern (EDT)
+    - cron: '0 1 * * *'
 
 jobs:
   update:
@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -24,15 +26,15 @@ jobs:
         run: node update-today.cjs
 
       - name: Commit & push updates
+        env:
+          REPO_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Don Doricent"
           git config user.email "ddoricent97@gmail.com"
-          # Try staging today.md, but don’t fail if it doesn’t exist
           git add today.md 2>/dev/null || true
-          # If there’s nothing staged (no new or changed file), skip commit
           if git diff --cached --quiet; then
             echo "No new katas today."
           else
-            git commit -m "Daily kata $(date +'%Y-%m-%d')"
-            git push origin main
+            git commit -m "Daily kata \$(date +'%Y-%m-%d')"
+            git push https://x-access-token:\${REPO_TOKEN}@github.com/\${{ github.repository }}.git HEAD:main
           fi
