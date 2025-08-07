@@ -14,6 +14,16 @@ function fetchJSON(url) {
   });
 }
 
+const json = await fetchJSON(url);
+
+// Debugging: print how many completions we fetched and the first few timestamps
+console.log(`Fetched ${json.data.length} completions.`);
+json.data.slice(0, 5).forEach((k, i) =>
+  console.log(`${i+1}. ${k.name} – completedAt: ${k.completedAt}`)
+);
+
+const todayKatas = json.data.filter(k => k.completedAt.startsWith(today));
+
 async function fetchKatas() {
   const username = 'codenamedon';  // ← replace this
   const today = new Date().toISOString().slice(0, 10);

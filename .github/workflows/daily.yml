@@ -21,7 +21,7 @@ jobs:
         run: echo "No dependencies to install"
 
       - name: Fetch today's katas
-        run: node update-today.js
+        run: node update-today.cjs
 
       - name: Commit & push updates
         run: |
