@@ -1,1 +1,38 @@
-<paste the above YAML here>
+name: Daily Codewars Update
+
+on:
+  workflow_dispatch:       # allows manual trigger in the Actions UI
+  schedule:
+    - cron: '0 1 * * *'    # runs every day at 01:00 UTC = 9:00 PM Eastern (EDT)
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Skip dependencies
+        run: echo "No dependencies to install"
+
+      - name: Fetch today's katas
+        run: node update-today.js
+
+      - name: Commit & push updates
+        run: |
+          git config user.name "Don Doricent"
+          git config user.email "ddoricent97@gmail.com"
+          # Try staging today.md, but don’t fail if it doesn’t exist
+          git add today.md 2>/dev/null || true
+          # If there’s nothing staged (no new or changed file), skip commit
+          if git diff --cached --quiet; then
+            echo "No new katas today."
+          else
+            git commit -m "Daily kata $(date +'%Y-%m-%d')"
+            git push origin main
+          fi
