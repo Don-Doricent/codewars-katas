@@ -1,5 +1,9 @@
 name: Daily Codewars Update
 
+# Grant write access so the Action bot can push commits
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   schedule:
