@@ -1,8 +1,10 @@
 name: Daily Codewars Update
 
 on:
+  # allows you to manually trigger from GitHub UI
+  workflow_dispatch:
+  # runs every day at 01:00 UTC = 9:00 PM Eastern (EDT)
   schedule:
-    # Runs every day at 01:00 UTC = 9:00 PM Eastern (EDT)
     - cron: '0 1 * * *'
 
 jobs:
