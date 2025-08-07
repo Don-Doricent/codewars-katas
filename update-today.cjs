@@ -18,27 +18,30 @@ function fetchJSON(url) {
   try {
     const username = 'codenamedon'; // ← your Codewars username
     const today = new Date().toISOString().slice(0, 10);
-    const url = \`https://www.codewars.com/api/v1/users/\${username}/code-challenges/completed?page=0\`;
+    const url = `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed?page=0`;
 
-    console.log(\`Fetching \${url}\`);
+    console.log(`Fetching ${url}`);
     const json = await fetchJSON(url);
 
-    console.log(\`Fetched \${json.data.length} entries. First 5:\`);
-    json.data.slice(0,5).forEach((k,i) =>
-      console.log(\`\${i+1}. \${k.name} – \${k.completedAt}\`)
+    console.log(`Fetched ${json.data.length} entries. First 5:`);
+    json.data.slice(0, 5).forEach((k, i) =>
+      console.log(`${i + 1}. ${k.name} – ${k.completedAt}`)
     );
 
-    const todayKatas = json.data.filter(k => k.completedAt.startsWith(today));
+    const todayKatas = json.data.filter(k =>
+      k.completedAt.startsWith(today)
+    );
+
     if (todayKatas.length === 0) {
       console.log('No katas completed today.');
       process.exit(0);
     }
 
     const lines = todayKatas.map(
-      k => \`- [\${k.name}](https://www.codewars.com/kata/\${k.id})\`
+      k => `- [${k.name}](https://www.codewars.com/kata/${k.id})`
     );
     fs.writeFileSync('today.md', lines.join('\n') + '\n');
-    console.log(\`Wrote \${todayKatas.length} kata(s) to today.md\`);
+    console.log(`Wrote ${todayKatas.length} kata(s) to today.md`);
     process.exit(0);
   } catch (err) {
     console.error(err);
