@@ -1,1 +1,1 @@
-- [Sum Mixed Array](https://www.codewars.com/kata/57eaeb9578748ff92a000009)
+- [Remove First and Last Character](https://www.codewars.com/kata/56bc28ad5bdaeb48760009b0)
