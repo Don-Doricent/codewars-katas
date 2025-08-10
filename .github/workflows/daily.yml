@@ -1,42 +1,38 @@
-name: Daily Codewars Update
-
-# Grant write access so the Action bot can push commits
-permissions:
-  contents: write
+name: Daily kata
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 1 * * *'
+    - cron: "0 14 * * *" 
+
+permissions:
+  contents: write
 
 jobs:
-  update:
+  commit-kata:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: true
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Skip dependencies
-        run: echo "No dependencies to install"
-
-      - name: Fetch today's katas
-        run: node update-today.cjs
-
-      - name: Commit & push updates
+      - name: Configure git author (your verified info)
         run: |
           git config user.name "Don Doricent"
           git config user.email "ddoricent97@gmail.com"
-          git add today.md 2>/dev/null || true
+
+      # TODO: add your step(s) that create/update your Codewars files here
+
+      - name: Commit and push if changed (UTC timestamp)
+        run: |
+          git add -A
           if git diff --cached --quiet; then
-            echo "No new katas today."
+            echo "No changes to commit."
           else
-            git commit -m "Daily kata $(date +'%Y-%m-%d')"
-            git push
+            git commit -m "Daily kata $(date -u +'%Y-%m-%d')"
+            git push origin HEAD:main
           fi
